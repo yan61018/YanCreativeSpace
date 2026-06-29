@@ -4,7 +4,7 @@ Static portfolio website for Yan Luo.
 
 ## Files to Upload
 
-Upload the full contents of this folder to GitHub, including:
+Upload these website files and folders to GitHub:
 
 - `index.html`
 - `styles.css`
@@ -14,20 +14,10 @@ Upload the full contents of this folder to GitHub, including:
 - `animation.html`
 - `photography.html`
 - `yearbook.html`
-- all image/video/asset folders:
-  - `3 to 4 oz literacy magazine`
-  - `Animation Example_Process`
-  - `assets`
-  - `Award_Certificate`
-  - `Buttons`
-  - `CFOCP_graphics`
-  - `Photography`
-  - `Portfolio`
-  - `Skip Prosser`
-  - `Software`
-  - `Yearbook Layout_HighSchool_Example`
-- `Profile Pic_animated.gif`
-- `digital camera_pic.png`
+- `assets`
+- `.nojekyll`
+
+The public pages now use web-safe copies inside `assets/web`, so GitHub Pages should not break because of spaces, symbols, or capitalization in the original project filenames.
 
 ## Publish With GitHub Pages
 
@@ -46,4 +36,3 @@ GitHub will create a public website link after the page finishes deploying.
 ## Local Preview
 
 Open `index.html` in a browser, or run a local static server from this folder.
-

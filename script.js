@@ -5,11 +5,18 @@ const projects = document.querySelectorAll(".project-card");
 const counters = document.querySelectorAll("[data-count]");
 const floaters = document.querySelectorAll(".float-el");
 let countersStarted = false;
+let lastSparkAt = 0;
+const sparkColors = ["#f4bd34", "#f6bfd0", "#8fa45e", "#bcd0e8"];
 
 document.addEventListener("pointermove", (event) => {
   if (!light) return;
   light.style.left = `${event.clientX}px`;
   light.style.top = `${event.clientY}px`;
+
+  if (event.timeStamp - lastSparkAt > 70 && window.matchMedia("(pointer: fine)").matches) {
+    createSpark(event.clientX, event.clientY);
+    lastSparkAt = event.timeStamp;
+  }
 
   const x = (event.clientX / window.innerWidth - 0.5) * 18;
   const y = (event.clientY / window.innerHeight - 0.5) * 18;
@@ -19,6 +26,16 @@ document.addEventListener("pointermove", (event) => {
     item.style.marginTop = `${y * depth}px`;
   });
 });
+
+function createSpark(x, y) {
+  const spark = document.createElement("span");
+  spark.className = "cursor-spark";
+  spark.style.left = `${x + (Math.random() - 0.5) * 18}px`;
+  spark.style.top = `${y + (Math.random() - 0.5) * 18}px`;
+  spark.style.setProperty("--spark-color", sparkColors[Math.floor(Math.random() * sparkColors.length)]);
+  document.body.appendChild(spark);
+  spark.addEventListener("animationend", () => spark.remove(), { once: true });
+}
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
@@ -93,4 +110,42 @@ function animateCount(counter) {
   }
 
   requestAnimationFrame(tick);
+}
+
+const graphicsLightbox = document.querySelector(".graphics-lightbox");
+const graphicsCards = document.querySelectorAll(".paper-card");
+let lastGraphicsTrigger = null;
+
+function closeGraphicsLightbox() {
+  if (!graphicsLightbox) return;
+  graphicsLightbox.hidden = true;
+  document.body.classList.remove("modal-open");
+  if (lastGraphicsTrigger) lastGraphicsTrigger.focus();
+}
+
+graphicsCards.forEach((card) => {
+  card.addEventListener("click", () => {
+    if (!graphicsLightbox) return;
+    lastGraphicsTrigger = card;
+    const image = graphicsLightbox.querySelector(".graphics-lightbox-media img");
+    image.src = card.dataset.image;
+    image.alt = card.querySelector("img").alt;
+    graphicsLightbox.querySelector("#graphics-lightbox-title").textContent = card.dataset.title;
+    graphicsLightbox.querySelector('[data-field="tool"]').textContent = card.dataset.tool;
+    graphicsLightbox.querySelector('[data-field="context"]').textContent = card.dataset.context;
+    graphicsLightbox.querySelector('[data-field="thought"]').textContent = card.dataset.thought;
+    graphicsLightbox.hidden = false;
+    document.body.classList.add("modal-open");
+    graphicsLightbox.querySelector(".graphics-lightbox-close").focus();
+  });
+});
+
+if (graphicsLightbox) {
+  graphicsLightbox.querySelector(".graphics-lightbox-close").addEventListener("click", closeGraphicsLightbox);
+  graphicsLightbox.addEventListener("click", (event) => {
+    if (event.target === graphicsLightbox) closeGraphicsLightbox();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !graphicsLightbox.hidden) closeGraphicsLightbox();
+  });
 }
